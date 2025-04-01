@@ -24,7 +24,10 @@ const Room = ()=>{
 
       if(action === "play") player.playVideo();
       if(action === "pause") player.pauseVideo();
-      if(action === "seek") player.seekTo(time,true);
+      if(action === "seek") {
+        console.log("seeking to:",time);
+        player.seekTo(time,true);
+      }
     });
 
     return()=>{
@@ -50,11 +53,14 @@ const Room = ()=>{
 
   const handleStateChange = (event)=>{
     const player = playerRef.current;
+    if(!player) return ;
     const time = player.getCurrentTime();
+
+    console.log("Emitting event - Action:", event.data ===1? "play" :"pause","time", time )
 
     if(event.data === 1) socket.emit("video_control",{roomId,action:"play",time});
     if(event.data === 2) socket.emit("video_control",{roomId,action:"pause",time});
-
+    if(event.data === 3) socket.emit("video_control",{roomId,action:"seek",time});
   }
 
  
